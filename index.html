@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <title>我的小站</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             min-height: 100vh;
@@ -100,6 +104,7 @@
 </head>
 <body>
 
+    <!-- ★ 关键：这里必须是 <liquid-glass>，不是 <div> ★ -->
     <liquid-glass
         responsive="true"
         vw-width="88"
@@ -137,7 +142,7 @@
         </div>
     </liquid-glass>
 
-    <!-- 直接用 CDN 加载，不用自己上传文件 -->
+    <!-- ★ 引用 CDN 加载组件 ★ -->
     <script type="module" src="https://cdn.jsdelivr.net/gh/winaviation/liquid-web@main/lg-component.js"></script>
 
     <script>
