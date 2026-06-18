@@ -2,7 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>我的小站</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的小站 - Liquid Glass</title>
     <style>
         * {
             margin: 0;
@@ -10,7 +11,7 @@
             box-sizing: border-box;
         }
 
-        /* ★ 关键：html 和 body 都固定住，禁止滚动 ★ */
+        /* ★ 关键：背景图片直接应用在 body 上，这是 Liquid Glass 生效的前提 ★ */
         html, body {
             width: 100%;
             height: 100%;
@@ -19,21 +20,23 @@
             justify-content: center;
             align-items: center;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            /* 背景渐变会被 Liquid Glass 折射，效果会更生动 */
             background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
             padding: 20px;
         }
 
-        /* ★ 卡片放大（从 420px → 520px） ★ */
-        .card {
-            width: 520px;
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 40px;
+        /* 
+            ★ 卡片样式调整 ★ 
+            因为 <liquid-glass> 组件会创建一个包含阴影DOM的元素，
+            原有的 .card 样式需要应用到组件内部的内容容器上。
+            这里我们保留大部分样式，但通过组件属性来控制玻璃效果。
+        */
+        .card-content {
+            /* 这是放在 <liquid-glass> 内部的实际内容 */
+            width: 100%;
             padding: 56px 48px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
+            color: #fff;
+            /* 内容本身的样式，继承自原 .card */
         }
 
         .greeting {
@@ -125,12 +128,10 @@
             transform: scale(0.92);
         }
 
-        /* 小屏适配 */
+        /* 小屏适配：调整内容内边距 */
         @media (max-width: 560px) {
-            .card {
-                width: 100%;
+            .card-content {
                 padding: 32px 20px;
-                border-radius: 28px;
             }
             .greeting {
                 font-size: 40px;
@@ -147,33 +148,55 @@
 </head>
 <body>
 
-    <div class="card">
-        <div class="greeting">你好！</div>
+    <!-- 
+        ★ 使用 <liquid-glass> 组件替代原来的 .card ★
+        我根据你原卡片设计（宽520px，内边距等）和常见视口（以1920x1080为例）
+        计算了响应式参数，这样卡片会保持比例并完美适配各种屏幕。
+        如果你希望调整玻璃质感，可以修改 blur、specular-opacity 等属性。
+    -->
+    <liquid-glass
+        responsive="true"
+        vw-width="27.1"      <!-- 520px / 1920px ≈ 27.1% -->
+        vh-height="30.6"     <!-- 以内容高度估算，你也可以微调 -->
+        radius-percent="7.7" <!-- 40px / 520px ≈ 7.7% (border-radius) -->
+        bezel-width-percent="3.8" <!-- 20px / 520px ≈ 3.8% -->
+        blur="20"
+        fallback-blur="25"
+        specular-opacity="0.6"
+        flex-center="true"
+    >
+        <!-- 原来的卡片内容，放在组件内部 -->
+        <div class="card-content">
+            <div class="greeting">你好！</div>
 
-        <div class="info-list">
-            <div class="info-row">
-                <span class="label">邮箱</span>
-                <span class="value">
-                    <span>wsnb12345qwert@outlook.com</span>
-                    <button class="copy-btn" onclick="copyEmail()">复制</button>
-                </span>
-            </div>
+            <div class="info-list">
+                <div class="info-row">
+                    <span class="label">邮箱</span>
+                    <span class="value">
+                        <span>wsnb12345qwert@outlook.com</span>
+                        <button class="copy-btn" onclick="copyEmail()">复制</button>
+                    </span>
+                </div>
 
-            <div class="info-row">
-                <span class="label">B站</span>
-                <span class="value">
-                    <a href="https://space.bilibili.com/3546836245678947" target="_blank">访问主页</a>
-                </span>
-            </div>
+                <div class="info-row">
+                    <span class="label">B站</span>
+                    <span class="value">
+                        <a href="https://space.bilibili.com/3546836245678947" target="_blank">访问主页</a>
+                    </span>
+                </div>
 
-            <div class="info-row">
-                <span class="label">GitHub</span>
-                <span class="value">
-                    <a href="https://github.com/YeeishVigg" target="_blank">访问主页</a>
-                </span>
+                <div class="info-row">
+                    <span class="label">GitHub</span>
+                    <span class="value">
+                        <a href="https://github.com/YeeishVigg" target="_blank">访问主页</a>
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
+    </liquid-glass>
+
+    <!-- ★ 引入 Liquid Glass 核心组件 ★ -->
+    <script type="module" src="https://cdn.jsdelivr.net/gh/winaviation/liquid-web@main/lg-component.js"></script>
 
     <script>
         function copyEmail() {
